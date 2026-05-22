@@ -16,91 +16,158 @@ namespace backEnd.Configurations
 {
     public static class ServiceExtensions
     {
-        /// <summary>Registers PostgreSQL DbContext.</summary>
-        public static IServiceCollection AddPostgresDatabase(this IServiceCollection services, IConfiguration config)
+        // ─────────────────────────────────────────────
+        // PostgreSQL Database Configuration
+        // ─────────────────────────────────────────────
+        public static IServiceCollection AddPostgresDatabase(
+            this IServiceCollection services,
+            IConfiguration config)
         {
-            var connStr = config.GetConnectionString("DefaultConnection")
-                          ?? throw new InvalidOperationException("DefaultConnection string not found in appsettings.json");
+            var connStr =
+                Environment.GetEnvironmentVariable("DefaultConnection")
+                ?? config.GetConnectionString("DefaultConnection");
+
+            if (string.IsNullOrEmpty(connStr))
+            {
+                throw new InvalidOperationException(
+                    "Database connection string not found.");
+            }
 
             services.AddDbContext<AppDbContext>(options =>
-                options.UseNpgsql(connStr));
+            {
+                options.UseNpgsql(connStr, npgsqlOptions =>
+                {
+                    npgsqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorCodesToAdd: null);
+
+                    npgsqlOptions.CommandTimeout(60);
+                });
+
+#if DEBUG
+                options.EnableSensitiveDataLogging();
+                options.EnableDetailedErrors();
+#endif
+            });
 
             return services;
         }
 
-        /// <summary>Registers JWT Bearer authentication.</summary>
-        public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+        // ─────────────────────────────────────────────
+        // JWT Authentication
+        // ─────────────────────────────────────────────
+        public static IServiceCollection AddJwtAuthentication(
+            this IServiceCollection services,
+            IConfiguration config)
         {
-            var jwtKey = config["Jwt:Key"] ?? "super_secret_fallback_key_1234567890";
+            var jwtKey =
+                Environment.GetEnvironmentVariable("JWT_KEY")
+                ?? config["Jwt:Key"]
+                ?? throw new InvalidOperationException("JWT Key missing");
+
+            var issuer =
+                Environment.GetEnvironmentVariable("JWT_ISSUER")
+                ?? config["Jwt:Issuer"]
+                ?? "FarmEase";
+
+            var audience =
+                Environment.GetEnvironmentVariable("JWT_AUDIENCE")
+                ?? config["Jwt:Audience"]
+                ?? "FarmEaseUsers";
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
+
+                options.DefaultChallengeScheme =
+                    JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;
+
                 options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    ValidIssuer = config["Jwt:Issuer"] ?? "JwtAuthDemo",
-                    ValidAudience = config["Jwt:Audience"] ?? "JwtAuthDemoUsers",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
-                };
+
+                options.TokenValidationParameters =
+                    new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = issuer,
+                        ValidAudience = audience,
+
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(jwtKey)),
+
+                        ClockSkew = TimeSpan.Zero
+                    };
             });
 
             services.AddAuthorization();
+
             return services;
         }
 
-        /// <summary>Registers Swagger (OpenAPI) with JWT support.</summary>
-        public static IServiceCollection AddSwaggerWithJwt(this IServiceCollection services)
+        // ─────────────────────────────────────────────
+        // Swagger Configuration
+        // ─────────────────────────────────────────────
+        public static IServiceCollection AddSwaggerWithJwt(
+            this IServiceCollection services)
         {
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "FarmEase API",
-                    Version = "v1"
+                    Version = "v1",
+                    Description = "FarmEase Backend API"
                 });
 
-                // JWT Authorization configuration for Swagger
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
-                    Scheme = "bearer",
-                    BearerFormat = "JWT",
-                    In = ParameterLocation.Header,
-                    Description = "Enter 'Bearer' followed by your JWT token."
-                });
-
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement
-                {
+                c.AddSecurityDefinition("Bearer",
+                    new OpenApiSecurityScheme
                     {
-                        new OpenApiSecurityScheme
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        Scheme = "bearer",
+                        BearerFormat = "JWT",
+                        In = ParameterLocation.Header,
+                        Description =
+                            "Enter JWT Token like: Bearer {your token}"
+                    });
+
+                c.AddSecurityRequirement(
+                    new OpenApiSecurityRequirement
+                    {
                         {
-                            Reference = new OpenApiReference
+                            new OpenApiSecurityScheme
                             {
-                                Type = ReferenceType.SecurityScheme,
-                                Id = "Bearer"
-                            }
-                        },
-                        Array.Empty<string>()
-                    }
-                });
+                                Reference =
+                                    new OpenApiReference
+                                    {
+                                        Type =
+                                            ReferenceType.SecurityScheme,
+                                        Id = "Bearer"
+                                    }
+                            },
+                            Array.Empty<string>()
+                        }
+                    });
             });
 
             return services;
         }
 
-        /// <summary>Registers all services and repositories via dependency injection.</summary>
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services)
+        // ─────────────────────────────────────────────
+        // Dependency Injection
+        // ─────────────────────────────────────────────
+        public static IServiceCollection AddApplicationServices(
+            this IServiceCollection services)
         {
             // AutoMapper
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
@@ -127,25 +194,29 @@ namespace backEnd.Configurations
             return services;
         }
 
-        /// <summary>Configures CORS to allow Angular frontend.</summary>
-public static IServiceCollection AddAngularCors(this IServiceCollection services)
-{
-    services.AddCors(options =>
-    {
-        options.AddPolicy("AllowAngularApp", policy =>
+        // ─────────────────────────────────────────────
+        // CORS Configuration
+        // ─────────────────────────────────────────────
+        public static IServiceCollection AddAngularCors(
+            this IServiceCollection services)
         {
-            policy
-                .WithOrigins(
-                    "http://localhost:4200",
-                    "https://farmease-ui.onrender.com"
-                )
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials();
-        });
-    });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAngularApp", policy =>
+                {
+                    policy
+                        .WithOrigins(
+                            "http://localhost:4200",
+                            "https://your-frontend.onrender.com",
+                            "https://your-frontend.vercel.app"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
+                });
+            });
 
-    return services;
-}
+            return services;
+        }
     }
 }

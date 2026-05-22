@@ -1,0 +1,93 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\About\\index.html",
+      "PackagePath": "staticwebassets\\browser\\About\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Admin\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Admin\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Cart\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Cart\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Contact\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Contact\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\HomePage\\index.html",
+      "PackagePath": "staticwebassets\\browser\\HomePage\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Login\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Login\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Orders\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Orders\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Products\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Products\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Profile\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Profile\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Signup\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Signup\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\Wishlist\\index.html",
+      "PackagePath": "staticwebassets\\browser\\Wishlist\\index.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\aboutus.png",
+      "PackagePath": "staticwebassets\\browser\\aboutus.png"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\favicon.ico",
+      "PackagePath": "staticwebassets\\browser\\favicon.ico"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\index.csr.html",
+      "PackagePath": "staticwebassets\\browser\\index.csr.html"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\logo.png",
+      "PackagePath": "staticwebassets\\browser\\logo.png"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\main-DRQUVJUC.js",
+      "PackagePath": "staticwebassets\\browser\\main-DRQUVJUC.js"
+    },
+    {
+      "Id": "C:\\Users\\pcit100\\Desktop\\farmEase-main\\backEnd\\wwwroot\\browser\\styles-UQO3WLU3.css",
+      "PackagePath": "staticwebassets\\browser\\styles-UQO3WLU3.css"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.backEnd.Microsoft.AspNetCore.StaticWebAssetEndpoints.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssetEndpoints.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.backEnd.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.backEnd.props",
+      "PackagePath": "build\\backEnd.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.backEnd.props",
+      "PackagePath": "buildMultiTargeting\\backEnd.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.backEnd.props",
+      "PackagePath": "buildTransitive\\backEnd.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

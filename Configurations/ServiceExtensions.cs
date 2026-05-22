@@ -197,25 +197,25 @@ namespace backEnd.Configurations
         // ─────────────────────────────────────────────
         // CORS Configuration
         // ─────────────────────────────────────────────
-        public static IServiceCollection AddAngularCors(
-            this IServiceCollection services)
+public static IServiceCollection AddAngularCors(
+    this IServiceCollection services)
+{
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAngularApp", policy =>
         {
-            services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAngularApp", policy =>
-                {
-                    policy
-                        .WithOrigins(
-                            "http://localhost:4200",
-                            "https://farmeaseee.vercel.app"
-                        )
-                        .AllowAnyHeader()
-                        .AllowAnyMethod()
-                        .AllowCredentials();
-                });
-            });
+            policy
+                .WithOrigins(
+                    "http://localhost:4200",
+                    "https://farmeaseee.vercel.app"
+                )
+                .AllowAnyHeader()
+                .AllowAnyMethod()
+                .AllowCredentials();
+        });
+    });
 
-            return services;
-        }
+    return services;
+}
     }
 }

@@ -134,12 +134,18 @@ namespace backEnd.Configurations
             {
                 options.AddPolicy("AllowAngularApp", policy =>
                 {
-                    policy.WithOrigins("http://localhost:4200")
-                          .AllowAnyHeader()
-                          .AllowAnyMethod();
+                    policy
+                        .WithOrigins(
+                            "http://localhost:4200",
+                            
+                            "https://backend-2a4l.onrender.com/"
+                        )
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
-
+        
             return services;
         }
     }

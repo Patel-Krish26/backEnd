@@ -3,20 +3,25 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 
-COPY . .
+# Copy csproj and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
 
-RUN dotnet restore "backEnd.csproj"
+# Copy remaining files
+COPY . ./
 
-RUN dotnet publish "backEnd.csproj" -c Release -o /app/publish
+# Publish application
+RUN dotnet publish -c Release -o /app/publish
 
 # Runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 WORKDIR /app
 
-COPY --from=build /app/publish .
-
+# Render uses PORT environment variable
 ENV ASPNETCORE_URLS=http://+:10000
+
+COPY --from=build /app/publish .
 
 EXPOSE 10000
 

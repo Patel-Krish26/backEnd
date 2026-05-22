@@ -207,8 +207,7 @@ namespace backEnd.Configurations
                     policy
                         .WithOrigins(
                             "http://localhost:4200",
-                            "https://your-frontend.onrender.com",
-                            "https://your-frontend.vercel.app"
+                            "https://farmeaseee.vercel.app"
                         )
                         .AllowAnyHeader()
                         .AllowAnyMethod()

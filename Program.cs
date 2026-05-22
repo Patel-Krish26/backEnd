@@ -3,75 +3,50 @@ using backEnd.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ─────────────────────────────────────────────
-// Service Registrations
-// ─────────────────────────────────────────────
+// Services
 builder.Services.AddControllers();
-
 builder.Services.AddEndpointsApiExplorer();
 
-// Database
 builder.Services.AddPostgresDatabase(builder.Configuration);
-
-// JWT Authentication
 builder.Services.AddJwtAuthentication(builder.Configuration);
-
-// Swagger
 builder.Services.AddSwaggerWithJwt();
-
-// Application Services
 builder.Services.AddApplicationServices();
-
-// CORS
 builder.Services.AddAngularCors();
 
 var app = builder.Build();
 
-// ─────────────────────────────────────────────
 // Global Exception Middleware
-// ─────────────────────────────────────────────
 app.UseGlobalExceptionMiddleware();
 
-// ─────────────────────────────────────────────
-// Swagger Middleware
-// ─────────────────────────────────────────────
-app.UseSwagger();
-
-app.UseSwaggerUI(c =>
+// Swagger ONLY in Development
+if (app.Environment.IsDevelopment())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FarmEase API v1");
+    app.UseSwagger();
 
-    // Swagger opens at root URL
-    c.RoutePrefix = string.Empty;
-});
-
-// ─────────────────────────────────────────────
-// IMPORTANT:
-// Disable HTTPS redirection on Render
-// ─────────────────────────────────────────────
-if (!app.Environment.IsProduction())
-{
-    app.UseHttpsRedirection();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FarmEase API v1");
+        c.RoutePrefix = string.Empty;
+    });
 }
 
-// ─────────────────────────────────────────────
+// IMPORTANT FOR RENDER
+// DO NOT FORCE HTTPS
+// app.UseHttpsRedirection();
+
+app.UseRouting();
+
 // CORS
-// ─────────────────────────────────────────────
 app.UseCors("AllowAngularApp");
 
-// ─────────────────────────────────────────────
-// Authentication & Authorization
-// ─────────────────────────────────────────────
+// Authentication
 app.UseAuthentication();
-
 app.UseAuthorization();
 
-// ─────────────────────────────────────────────
 // Controllers
-// ─────────────────────────────────────────────
 app.MapControllers();
 
-// ─────────────────────────────────────────────
-// Run Application
-// ─────────────────────────────────────────────
+// Health endpoint for Render
+app.MapGet("/", () => "FarmEase API Running");
+
 app.Run();
